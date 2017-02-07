@@ -18,6 +18,9 @@ class GeolocationServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app->singleton(SimpleCalculator::class,function($app){
+           return new SimpleCalculator();
+        });
         $this->app->singleton(self::KEY, function ($app) {
             return new SimpleCalculator();
         });
