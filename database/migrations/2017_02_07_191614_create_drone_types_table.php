@@ -15,6 +15,7 @@ class CreateDroneTypesTable extends Migration
     {
         Schema::create('drone_types', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->float('speed');
             $table->integer('fuelUnits');
             $table->float('milesPerUnit');

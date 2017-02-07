@@ -10,12 +10,20 @@ namespace App\Drones;
 
 
 use Illuminate\Database\Eloquent\Model;
+
 /**
+ * @property string $name
  * @property float $speed
  * @property integer $fuelUnits
  * @property float $milesPerUnit
-**/
+ **/
 class Type extends Model
 {
     protected $guarded = ['id'];
+    protected $table = 'drone_types';
+
+    public function types()
+    {
+        return $this->hasMany(Drone::class, 'type_id');
+    }
 }
