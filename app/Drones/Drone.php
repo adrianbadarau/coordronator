@@ -10,6 +10,7 @@ namespace App\Drones;
 
 
 use Illuminate\Database\Eloquent\Model;
+
 /**
  * @property float start_long
  * @property float start_lat
@@ -17,10 +18,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property float finish_lat
  * @property \DateTime start_time
  * @property \DateTime end_time
-**/
+ **/
 class Drone extends Model implements DroneContract
 {
     protected $guarded = ['id'];
+    public $timestamps = false;
+    protected $dates = [
+        'start_time',
+        'end_time'
+    ];
+    protected $casts = [
+        'start_long' => 'float',
+        'start_lat' => 'float',
+        'finish_long' => 'float',
+        'finish_lat' => 'float',
+    ];
 
     public function type()
     {
