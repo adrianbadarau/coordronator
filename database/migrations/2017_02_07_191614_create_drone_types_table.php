@@ -29,6 +29,6 @@ class CreateDroneTypesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('drone_types');
     }
 }

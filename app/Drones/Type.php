@@ -10,7 +10,11 @@ namespace App\Drones;
 
 
 use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @property float $speed
+ * @property integer $fuelUnits
+ * @property float $milesPerUnit
+**/
 class Type extends Model
 {
     protected $guarded = ['id'];
