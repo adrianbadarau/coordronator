@@ -11,10 +11,10 @@ namespace App\Drones;
 
 use Illuminate\Database\Eloquent\Model;
 /**
- * @property string start_long
- * @property string start_lat
- * @property string finish_long
- * @property string finish_lat
+ * @property float start_long
+ * @property float start_lat
+ * @property float finish_long
+ * @property float finish_lat
  * @property \DateTime start_time
  * @property \DateTime end_time
 **/

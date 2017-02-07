@@ -17,10 +17,10 @@ class CreateDronesTable extends Migration
             $table->increments('id');
             $table->integer('type_id', false, false);
             $table->index('type_id');
-            $table->string('start_long');
-            $table->string('start_lat');
-            $table->string('finish_long');
-            $table->string('finish_lat');
+            $table->float('start_long');
+            $table->float('start_lat');
+            $table->float('finish_long');
+            $table->float('finish_lat');
             $table->dateTimeTz('start_time');
             $table->dateTimeTz('end_time');
         });
