@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+alias console="./bin/console"
+alias sync-cache="rm -rf var/cache/ && cp -r ~/var/cache var"
+alias artisan="php artisan"
