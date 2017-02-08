@@ -82,7 +82,7 @@ class Drone extends Model implements DroneContract
 
     public function duration(): float
     {
-        $now = new Carbon('now', $this->end_time->timezone);
+        $now = new Carbon('now', $this->start_time->tz);
         return $now->diffInMinutes($this->end_time) / 60;
     }
 

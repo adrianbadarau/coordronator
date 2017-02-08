@@ -22,20 +22,30 @@ class DroneFormatterService
 
     /**
      * @param Drone $drone
+     * @return string
      */
-    public function getDroneListCommandFormat(Drone $drone)
+    public function getDroneListCommandFormat(Drone $drone): string
     {
         $this->setDrone($drone);
-        $view = <<<DRONE
+        $view = <<<VIEW
 | {$this->getDroneName()} | {$this->getDepartureLocation()} | {$this->getDepatureTime()} | {$this->getTripDistance()} | {$this->getTripDuration()} | {$this->getArrivalLocation()} | {$this->getArrivalTime()} | {$this->getTripProgress()} | {$this->getRemainingFuel()} |
 ----------------------------------------------------------------------------------------------------
-DRONE;
+VIEW;
         return $view;
     }
 
-    public function getDroneMissionCommandFormat(Drone $drone)
+    /**
+     * @param Drone $drone
+     * @return string
+     */
+    public function getDroneMissionCommandFormat(Drone $drone): string
     {
-
+        $this->setDrone($drone);
+        $view = <<<VIEW
+| {$this->getDepatureTime()} | {$this->getTripDistance()} | {$this->getTripDuration()} | {$this->getArrivalTime()} |
+-----------------------------------------------------------------------------------------------------
+VIEW;
+        return $view;
     }
 
     /**
