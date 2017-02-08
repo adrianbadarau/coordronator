@@ -30,7 +30,9 @@ class CreateDrone extends  Command
     public function handle()
     {
         $this->droneRepo->fill([
-            'type_id' => $this->argument('type_id')
+            'type_id' => $this->argument('type_id'),
+            'start_lat' => config('config.homebase.lat'),
+            'start_long' => config('config.homebase.long')
         ])->save();
     }
 }
