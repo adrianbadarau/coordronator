@@ -40,15 +40,17 @@ class ViewDrones extends Command
         /** @var Drone[] $drones */
         $drones = $this->droneRepo->all();
         $table = <<<TEXT
----------------------------------------------------------------------------------------------------
-| Drone | Departure | Departure | Distance | Duration | Arrival  | Arrival | Progress | Remaining |
-|       |  Location |   Time    |          |          | Location |  Time   |          |   Fuel    |
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|        Drone      | Departure Location | Departure Time | Distance | Duration | Arrival Location | Arrival Time | Progress | Remaining Fuel |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 TEXT;
 
         foreach ($drones as $drone){
             $table .= $this->droneFormatter->getDroneListCommandFormat($drone);
         }
+
+        echo $table;
 
     }
 

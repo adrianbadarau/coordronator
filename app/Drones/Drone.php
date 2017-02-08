@@ -21,15 +21,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float finish_lat
  * @property \Carbon\Carbon start_time
  * @property \Carbon\Carbon end_time
+ * @property int start_timezone
+ * @property string end_timezone
+ * @property string start_timezone
  **/
 class Drone extends Model implements DroneContract
 {
     protected $guarded = ['id'];
     public $timestamps = false;
-    protected $dates = [
-        'start_time',
-        'end_time'
-    ];
+
     protected $casts = [
         'start_long' => 'float',
         'start_lat' => 'float',
@@ -66,32 +66,39 @@ class Drone extends Model implements DroneContract
 
     public function remainingFuel(): float
     {
-        $spentFuel = $this->traveledDistance() / $this->type()->milesPerUnit;
-        return $this->type()->fuelUnits - $spentFuel;
+        $spentFuel = $this->traveledDistance() / $this->getType()->milesPerUnit;
+        return $this->getType()->fuelUnits - $spentFuel;
     }
 
     public function remainingFuelPercent(): int
     {
-        $remaining = ($this->type()->fuelUnits * $this->remainingFuel()) / 100;
+
+        $remaining = ($this->remainingFuel() / $this->getType()->fuelUnits) * 100;
         return floor($remaining);
     }
 
     public function traveledDistance(): float
     {
-        return $this->type()->speed * $this->duration();
+        $distance = $this->getType()->speed * $this->elapsedTime();
+        return $distance >= $this->routeDistance() ? $this->routeDistance() : $distance;
     }
 
     public function progressPercent(): int
     {
-        $tripDistance = $this->routeDistance();
-        $progress = ($tripDistance * 100) / $this->traveledDistance();
+        $progress = 100 - ($this->traveledDistance() / $this->routeDistance()) * 100;
         return floor($progress);
     }
 
     public function duration(): float
     {
-        $now = new Carbon('now', $this->start_time->tz);
+        $now = new Carbon('now', $this->end_time->tz);
         return $now->diffInMinutes($this->end_time) / 60;
+    }
+
+    public function elapsedTime(): float
+    {
+        $now = new Carbon('now', $this->start_time->tz);
+        return $this->start_time->diffInMinutes($now) / 60;
     }
 
     public function routeDistance(): int
@@ -105,13 +112,43 @@ class Drone extends Model implements DroneContract
         return $remaining;
     }
 
-    public function setEndTime(string $tz = null)
+    public function setEndTime(string $tz = null): void
     {
         $tz = $tz ?? env('APP_TIMEZONE');
         $tripDuration = ($this->routeDistance() / $this->getType()->speed) * 60;
-        $time = new Carbon('now', $tz);
+        $timezone = new \DateTimeZone($tz);
+        $time = new Carbon('now', $timezone);
         $time->addMinutes(floor($tripDuration));
         $this->end_time = $time;
+        $this->end_timezone = $tz;
+    }
+
+    public function setStartTime(string $tz = null): void
+    {
+        $tz = $tz ?? env('APP_TIMEZONE');
+        $timezone = new \DateTimeZone($tz);
+        $time = new Carbon('now', $timezone);
+        $this->start_time = $time;
+        $this->start_timezone = $tz;
+    }
+
+    public function getEndTimeAttribute($value): Carbon
+    {
+        $timezone = new \DateTimeZone($this->end_timezone);
+        $date = new Carbon($value, $timezone);
+        return $date;
+    }
+
+    public function getStartTimeAttribute($value): Carbon
+    {
+        $timezone = new \DateTimeZone($this->start_timezone);
+        $date = new Carbon($value, $timezone);
+        return $date;
+    }
+
+    public function getName(): string
+    {
+        return $this->getType()->name . '-' . $this->id;
     }
 
 }

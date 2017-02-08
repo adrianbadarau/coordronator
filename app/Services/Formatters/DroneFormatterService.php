@@ -30,6 +30,7 @@ class DroneFormatterService
         $view = <<<VIEW
 | {$this->getDroneName()} | {$this->getDepartureLocation()} | {$this->getDepatureTime()} | {$this->getTripDistance()} | {$this->getTripDuration()} | {$this->getArrivalLocation()} | {$this->getArrivalTime()} | {$this->getTripProgress()} | {$this->getRemainingFuel()} |
 ----------------------------------------------------------------------------------------------------
+
 VIEW;
         return $view;
     }
@@ -53,7 +54,7 @@ VIEW;
      */
     private function getDroneName(): string
     {
-        return $this->getDrone()->type()->name . " " . $this->getDrone()->id;
+        return $this->getDrone()->getName();
     }
 
     /**
@@ -82,17 +83,17 @@ VIEW;
 
     private function getDepatureTime()
     {
-        return $this->getDrone()->start_time->hour . ' : ' . $this->getDrone()->start_time->minute . " \n " . $this->getDrone()->start_time->timezoneName;
+        return "  ".$this->getDrone()->start_time->hour . ' : ' . $this->getDrone()->start_time->minute . " " . $this->getDrone()->start_time->timezoneName . "  ";
     }
 
     private function getTripDistance(): string
     {
-        return $this->getDrone()->routeDistance() . ' miles';
+        return $this->getDrone()->routeDistance() . ' miles  ';
     }
 
     private function getTripDuration(): string
     {
-        return (string)$this->getDrone()->duration();
+        return (string)number_format($this->getDrone()->duration(),1)."  ";
     }
 
     private function getArrivalLocation(): string
@@ -102,7 +103,7 @@ VIEW;
 
     private function getArrivalTime(): string
     {
-        return $this->getDrone()->end_time->hour . ' : ' . $this->getDrone()->end_time->minute . "\n" . $this->getDrone()->end_time->timezoneName;
+        return $this->getDrone()->end_time->hour . ' : ' . $this->getDrone()->end_time->minute . " " . $this->getDrone()->end_time->timezoneName;
     }
 
     private function getTripProgress(): string
