@@ -11,8 +11,6 @@ namespace App\Drones;
 
 interface DroneContract
 {
-    public function maxRange(): float;
-
     public function remainingFuel(): float;
 
     public function progressPercent(): int;

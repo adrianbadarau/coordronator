@@ -10,6 +10,7 @@ namespace App\Console\Commands;
 
 
 use App\Drones\Drone;
+use App\Services\Formatters\DroneFormatterService;
 use Illuminate\Console\Command;
 
 class ViewDrones extends Command
@@ -20,12 +21,17 @@ class ViewDrones extends Command
      * @var Drone
      */
     private $droneRepo;
+    /**
+     * @var DroneFormatterService
+     */
+    private $droneFormatter;
 
-    public function __construct(Drone $droneRepo)
+    public function __construct(Drone $droneRepo, DroneFormatterService $droneFormatter)
     {
         parent::__construct();
 
         $this->droneRepo = $droneRepo;
+        $this->droneFormatter = $droneFormatter;
     }
 
 
@@ -41,9 +47,9 @@ class ViewDrones extends Command
 TEXT;
 
         foreach ($drones as $drone){
-
-
+            $table .= $this->droneFormatter->getDroneListCommandFormat($drone);
         }
 
     }
+
 }
