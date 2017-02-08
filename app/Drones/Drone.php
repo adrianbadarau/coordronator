@@ -9,15 +9,18 @@
 namespace App\Drones;
 
 
+use App\Services\GeoLocation\SimpleCalculator;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property float start_long
  * @property float start_lat
  * @property float finish_long
  * @property float finish_lat
- * @property \DateTime start_time
- * @property \DateTime end_time
+ * @property \Carbon\Carbon start_time
+ * @property \Carbon\Carbon end_time
  **/
 class Drone extends Model implements DroneContract
 {
@@ -33,39 +36,74 @@ class Drone extends Model implements DroneContract
         'finish_long' => 'float',
         'finish_lat' => 'float',
     ];
+    /**
+     * @var SimpleCalculator
+     */
+    private $calculator;
 
-    public function type()
+    public function __construct(SimpleCalculator $calculator)
+    {
+        parent::__construct();
+        $this->calculator = $calculator;
+    }
+
+
+    /**
+     * @return Type|BelongsTo
+     */
+    public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class, 'type_id', 'id');
     }
 
-    public function maxRange(): float
-    {
-        // TODO: Implement maxRange() method.
-    }
-
     public function remainingFuel(): float
     {
-        // TODO: Implement remainingFuel() method.
+        $spentFuel = $this->traveledDistance() / $this->type()->milesPerUnit;
+        return $this->type()->fuelUnits - $spentFuel;
     }
 
-    public function progress(): int
+    public function remainingFuelPercent(): int
     {
-        // TODO: Implement progress() method.
+        $remaining = ($this->type()->fuelUnits * $this->remainingFuel()) / 100;
+        return floor($remaining);
     }
 
-    public function duration(): \DateTime
+    public function traveledDistance(): float
     {
-        // TODO: Implement duration() method.
+        return $this->type()->speed * $this->duration();
+    }
+
+    public function progressPercent(): int
+    {
+        $tripDistance = $this->routeDistance();
+        $progress = ($tripDistance * 100) / $this->traveledDistance();
+        return floor($progress);
+    }
+
+    public function duration(): float
+    {
+        $now = new Carbon('now', $this->end_time->timezone);
+        return $now->diffInMinutes($this->end_time) / 60;
     }
 
     public function routeDistance(): int
     {
-        // TODO: Implement routeDistance() method.
+        return (int)$this->calculator->distanceTo($this->start_lat, $this->start_long, $this->finish_lat, $this->finish_long);
     }
 
     public function remainingDistance(): int
     {
-        // TODO: Implement remainingDistance() method.
+        $remaining = $this->routeDistance() - ($this->type()->speed * $this->duration());
+        return $remaining;
     }
+
+    public function setEndTime($tz = null)
+    {
+        $tz = $tz ?? env('APP_TIMEZONE');
+        $tripDuration = ($this->routeDistance() / $this->type()->speed) * 60;
+        $time = new Carbon('now', $tz);
+        $time->addMinutes(floor($tripDuration));
+        $this->end_time = $time;
+    }
+
 }

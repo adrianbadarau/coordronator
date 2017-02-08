@@ -41,10 +41,7 @@ class ViewDrones extends Command
 TEXT;
 
         foreach ($drones as $drone){
-            $table .= <<<DRONE
-| {$drone->getDroneName()} | {$drone->getDepartureLocation()} | {$drone->getDepatureTime()} | {$drone->getTripDistance()} | {$drone->getTripDuration()} | {$drone->getArrivalLocation()} | {$drone->getArrivalTime()} | {$drone->getTripProgress()} | {$drone->getRemainingFuel()} |
-----------------------------------------------------------------------------------------------------
-DRONE;
+
 
         }
 

@@ -15,9 +15,9 @@ interface DroneContract
 
     public function remainingFuel(): float;
 
-    public function progress(): int;
+    public function progressPercent(): int;
 
-    public function duration(): \DateTime;
+    public function duration(): float;
 
     public function routeDistance(): int;
 

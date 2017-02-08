@@ -26,4 +26,9 @@ class Type extends Model
     {
         return $this->hasMany(Drone::class, 'type_id');
     }
+
+    public function maxRange(): float
+    {
+        return $this->fuelUnits * $this->milesPerUnit;
+    }
 }
