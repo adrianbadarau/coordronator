@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\CreateDrone;
+use App\Console\Commands\Test;
+use App\Console\Commands\ViewDrones;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         CreateDrone::class,
+        ViewDrones::class,
+        Test::class,
     ];
 
     /**

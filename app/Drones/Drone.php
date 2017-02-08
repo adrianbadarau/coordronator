@@ -41,10 +41,10 @@ class Drone extends Model implements DroneContract
      */
     private $calculator;
 
-    public function __construct(SimpleCalculator $calculator)
+    public function __construct()
     {
         parent::__construct();
-        $this->calculator = $calculator;
+        $this->calculator = app(SimpleCalculator::class);
     }
 
 
@@ -54,6 +54,14 @@ class Drone extends Model implements DroneContract
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class, 'type_id', 'id');
+    }
+
+    /**
+     * @return Type
+     */
+    public function getType(): Type
+    {
+        return $this->type;
     }
 
     public function remainingFuel(): float
@@ -93,14 +101,14 @@ class Drone extends Model implements DroneContract
 
     public function remainingDistance(): int
     {
-        $remaining = $this->routeDistance() - ($this->type()->speed * $this->duration());
+        $remaining = $this->routeDistance() - ($this->getType()->speed * $this->duration());
         return $remaining;
     }
 
-    public function setEndTime($tz = null)
+    public function setEndTime(string $tz = null)
     {
         $tz = $tz ?? env('APP_TIMEZONE');
-        $tripDuration = ($this->routeDistance() / $this->type()->speed) * 60;
+        $tripDuration = ($this->routeDistance() / $this->getType()->speed) * 60;
         $time = new Carbon('now', $tz);
         $time->addMinutes(floor($tripDuration));
         $this->end_time = $time;
