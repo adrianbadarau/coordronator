@@ -70,7 +70,7 @@ class StartMission extends Command
     }
 
     /**
-     * @return Drone|mixed
+     * @return Drone
      * @throws \Exception
      */
     public function getDroneFromInput(): Drone
@@ -78,9 +78,7 @@ class StartMission extends Command
         $startLat = (float)$this->ask('Add starting Latitude', config('config.homebase.lat'));
         $startLon = (float)$this->ask('Add start Longitude', config('config.homebase.long'));
         $startTz = $this->anticipate('Start time zone: ', $this->timeZoneHints, env('APP_TIMEZONE'));
-//        $finishLat = (float)$this->ask('Add finish Latitude', 48.675707);
         $finishLat = (float)$this->ask('Add finish Latitude', 51.916742);
-//        $finishLon = (float)$this->ask('Add finish Longitude', 44.523886);
         $finishLon = (float)$this->ask('Add finish Longitude', 0.132552);
         $finishTz = $this->anticipate('Finish time zone: ', $this->timeZoneHints, '+3');
         $missionDistance = $this->calculator->distanceTo($startLat, $startLon, $finishLat, $finishLon);
@@ -91,7 +89,7 @@ class StartMission extends Command
         if (!$types->count()) {
             throw new \Exception("we are sorry but the mission distance is to much for our little drone => go design a better type of drone");
         }
-        $types = $types->transform(function (Type $type, $key) {
+        $types = $types->transform(function (Type $type) {
             return $type->id;
         })->toArray();
         $drones = $this->droneRepo->with('type')->whereIn('type_id', $types)->get();
