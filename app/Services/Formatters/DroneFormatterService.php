@@ -45,6 +45,7 @@ VIEW;
         $view = <<<VIEW
 | {$this->getDepatureTime()} | {$this->getTripDistance()} | {$this->getTripDuration()} | {$this->getArrivalTime()} |
 -----------------------------------------------------------------------------------------------------
+
 VIEW;
         return $view;
     }

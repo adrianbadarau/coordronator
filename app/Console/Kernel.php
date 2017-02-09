@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CreateDrone;
+use App\Console\Commands\StartMission;
 use App\Console\Commands\Test;
 use App\Console\Commands\ViewDrones;
 use Illuminate\Console\Scheduling\Schedule;
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
         CreateDrone::class,
         ViewDrones::class,
         Test::class,
+        StartMission::class
     ];
 
     /**
