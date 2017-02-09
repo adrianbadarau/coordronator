@@ -10,6 +10,7 @@ namespace App\Console\Commands;
 
 
 use App\Drones\Drone;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class CreateDrone extends  Command
@@ -21,18 +22,13 @@ class CreateDrone extends  Command
      */
     private $droneRepo;
 
-    public function __construct(Drone $droneRepo)
-    {
-        parent::__construct();
-        $this->droneRepo = $droneRepo;
-    }
-
     public function handle()
     {
-        $this->droneRepo->fill([
-            'type_id' => $this->argument('type_id'),
-            'start_lat' => config('config.homebase.lat'),
-            'start_long' => config('config.homebase.long')
-        ])->save();
+        $drone = new Drone();
+        $drone->type_id = 3;
+        $drone->start_lat = config('config.homebase.lat');
+        $drone->start_long = config('config.homebase.long');
+        $drone->setStartTime(env('APP_TIMEZONE'));
+        $drone->save();
     }
 }
